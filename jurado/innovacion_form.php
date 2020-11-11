@@ -8,9 +8,9 @@
     echo 'Usted no tiene permiso de ver este contenido.';
     die();
   }
-
+  
   $link=mysqli_connect("localhost","root","");
-  mysqli_select_db($link,"proyecto")
+  mysqli_select_db($link,"proyecto");
  ?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -48,15 +48,44 @@
       </tr>
       <tr>
         <td height="46" colspan="4">Categoria:
-             <?php  
-           $res=mysqli_query($link,"SELECT * from jueces where usr = '$varsesion'");
-          
-           while($row=mysqli_fetch_array($res))
-                    {
-                       echo $row["nombre_categoria"];                   
+            <?php  
+            try {
+            
+              $mysqli = new mysqli("localhost","root","","proyecto");
 
-                    }       
-          ?></td>
+              // Check connection
+              if ($mysqli -> connect_errno) {
+              echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+              exit();
+              }
+
+              //Consulta para traer el nombre de la categoria de la tabla categorias.
+              $consulta = "SELECT categorias.Nombre_Categoria as categorias, usuarios.Usuario from usuarios INNER JOIN 
+              categorias ON usuarios.Id_Categoria = categorias.Id_Categoria where Usuario =". "'".$varsesion."'";
+
+              $respuesta = mysqli_query($mysqli , $consulta);
+
+              //if($respuesta){ echo "true"; } else{ echo "false";}
+
+              foreach($respuesta as $mos){
+                echo $mos["categorias"] . "<br>";
+              }
+              
+              /*while ($mostrar = mysqli_fetch_row($respuesta)){
+                
+                echo implode(" ",$mostrar);
+              } */
+              
+
+            } catch (Exception $e) {
+                echo 'Caught exception: ',  $e->getMessage(), "\n";
+            }
+           
+
+                 
+
+          ?>
+        </td>
 
     </tr>
     <tr>
