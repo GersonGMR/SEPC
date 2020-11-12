@@ -3,6 +3,8 @@
   session_start();
   $varsesion = $_SESSION['usr'];
 
+  
+
   if($varsesion == null || $varsesion == '')
   {
     echo 'Usted no tiene permiso de ver este contenido.';
@@ -80,30 +82,54 @@
             } catch (Exception $e) {
                 echo 'Caught exception: ',  $e->getMessage(), "\n";
             }
-           
-
-                 
-
           ?>
         </td>
 
     </tr>
     <tr>
-      <td height="40" colspan="4"><strong>Titulo de la investigacion: 
+      <td height="40" colspan="4"><strong>Titulo de la investigacion:</strong>
+
          <select name="nombre_proyecto" id="nombre_proyecto">
           <option>Seleccione el nombre del proyecto</option>
-          <?php  
-          $res=mysqli_query($link,"SELECT * from grupos where (usr = '$varsesion') or (usr2 = '$varsesion') or (usr3 = '$varsesion')");
-                    while($row=mysqli_fetch_array($res))
-                    {
-                    ?>
-                      <option><?php echo $row ["nombre_proyecto"];?></option>
+          <?php   
 
-                    <?php 
+            try {
+              
 
-                    }         
-                    
-                    ?>  
+              $mysqli = new mysqli("localhost","root","","proyecto");
+
+              // Check connection
+              if ($mysqli -> connect_errno) 
+              {
+
+                echo "Failed to connect to MySQL: " . $mysqli -> connect_error;
+
+                exit();
+
+              }
+              
+              //Mandamos a llamar los datos de los proyectos relacionados con el usuario Juez
+              $consultaProyecto = "SELECT  proyectos.nombre_Proyecto as project, usuarios.Usuario FROM proyectos INNER JOIN 
+              usuarios ON proyectos.Id_Usuarios = usuarios.Id_Usuarios where usuarios.Usuario =". "'".$varsesion."'";
+              
+              $respuestaP = mysqli_query($mysqli, $consultaProyecto);
+
+              foreach($respuestaP as $project){
+                echo "<option>"."". $project["project"]." </option>";
+              }
+
+            }catch(Exception $e)
+            {
+
+              echo 'Caught exception: ',  $e->getMessage(), "\n";
+
+            } 
+          
+          
+          
+          
+          
+          ?> 
         </select></td>
     </tr>
   </table>
